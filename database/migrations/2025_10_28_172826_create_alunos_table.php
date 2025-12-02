@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nome');
             $table->string('porcao');
-            $table->integer('valor');
+            $table->float('valor');
             // linhas adicionadas
             $table->string('foto')->nullable();
             $table->unsignedBigInteger('curso_id');

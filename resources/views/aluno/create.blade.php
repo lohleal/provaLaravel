@@ -65,7 +65,7 @@
             <div class="col" >
                 <div class="form-floating mb-3">
                     <input
-                        type="number"
+                        type="text"
                         class="form-control"
                         name="valor"
                         placeholder="Valor"

@@ -44,7 +44,7 @@ class AlunoController extends Controller
             $aluno = new Aluno();
             $aluno->nome = mb_strtoupper($request->nome, 'UTF-8');
             $aluno->porcao = $request->porcao;
-            $aluno->valor = $request->valor;
+            $aluno->valor = floatval(str_replace(',', '.', $request->valor));
             $aluno->curso()->associate($curso);
             $aluno->save();
 
@@ -87,40 +87,38 @@ class AlunoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-  public function update(Request $request, string $id)
-{
-    $aluno = Aluno::find($id);
-    Gate::authorize('update', $aluno);
+    public function update(Request $request, string $id)
+    {
+        $aluno = Aluno::find($id);
+        Gate::authorize('update', $aluno);
 
-    $curso = Curso::find($request->curso);
+        $curso = Curso::find($request->curso);
 
-    if($aluno && $curso) {
-        $aluno->nome = mb_strtoupper($request->nome, 'UTF-8');
-        $aluno->porcao = $request->porcao;
-        $aluno->valor = $request->valor;
-        $aluno->curso()->associate($curso);
+        if($aluno && $curso) {
+            $aluno->nome = mb_strtoupper($request->nome, 'UTF-8');
+            $aluno->porcao = $request->porcao;
+            $aluno->valor = floatval(str_replace(',', '.', $request->valor));
+            $aluno->curso()->associate($curso);
 
-        // Se enviou nova foto
-        if($request->hasFile('foto')) {
+            if($request->hasFile('foto')) {
+                // Remove foto antiga
+                if($aluno->foto && Storage::disk('public')->exists($aluno->foto)) {
+                    Storage::disk('public')->delete($aluno->foto);
+                }
 
-            // excluir foto antiga
-            if($aluno->foto && Storage::disk('public')->exists($aluno->foto)) {
-                Storage::disk('public')->delete($aluno->foto);
+                // Salva nova foto
+                $request->file('foto')->storeAs('fotos', $name, ['disk' => 'public']);
+
+                $name = $aluno->id.'_'.time().'.'.$file->getClientOriginalExtension();
+                $file->storeAs('fotos', $name, 'public');
+                $aluno->foto = 'fotos/'.$name;
             }
 
-            $file = $request->file('foto');
-            $name = $aluno->id.'_'.time().'.'.$file->getClientOriginalExtension();
-            $file->storeAs('fotos', $name, 'public');
-
-            $aluno->foto = 'fotos/'.$name;
+            $aluno->save();
         }
 
-        $aluno->save();
+        return redirect()->route('aluno.index');
     }
-
-    return redirect()->route('aluno.index');
-}
-
 
     /**
      * Remove the specified resource from storage.
