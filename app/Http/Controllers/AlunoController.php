@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Aluno;
-use App\Models\Curso;
+use App\Models\Curso; // Em breve será Categoria
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
@@ -17,7 +17,13 @@ class AlunoController extends Controller
     public function index()
     {
         Gate::authorize('viewAny', Aluno::class);
-        $alunos = Aluno::all();
+
+        // Lista produtos ordenados pela categoria e pelo nome
+        $alunos = Aluno::with('curso')
+                       ->orderBy('curso_id')
+                       ->orderBy('nome')
+                       ->get();
+
         return view('aluno.index', compact('alunos'));
     }
 
@@ -27,7 +33,10 @@ class AlunoController extends Controller
     public function create()
     {
         Gate::authorize('create', Aluno::class);
-        $cursos = Curso::all();
+
+        // Isso futuramente será Categoria::all()
+        $cursos = Curso::orderBy('duracao')->get();
+
         return view('aluno.create', compact('cursos'));
     }
 
@@ -40,7 +49,7 @@ class AlunoController extends Controller
 
         $curso = Curso::find($request->curso);
 
-        if($curso) {
+        if ($curso) {
             $aluno = new Aluno();
             $aluno->nome = mb_strtoupper($request->nome, 'UTF-8');
             $aluno->porcao = $request->porcao;
@@ -48,24 +57,20 @@ class AlunoController extends Controller
             $aluno->curso()->associate($curso);
             $aluno->save();
 
-            if($request->hasFile('foto')) {
+            // Upload de foto
+            if ($request->hasFile('foto')) {
+
                 $file = $request->file('foto');
-                $name = $aluno->id.'_'.time().'.'.$file->getClientOriginalExtension();
+                $name = $aluno->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+
                 $file->storeAs('fotos', $name, 'public');
-                $aluno->foto = 'fotos/'.$name;
+
+                $aluno->foto = 'fotos/' . $name;
                 $aluno->save();
             }
         }
 
         return redirect()->route('aluno.index');
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        Gate::authorize('view', Aluno::class);
     }
 
     /**
@@ -76,9 +81,9 @@ class AlunoController extends Controller
         $aluno = Aluno::find($id);
         Gate::authorize('update', $aluno);
 
-        if($aluno) {
-            $cursos = Curso::all();
-            return view('aluno.edit', compact(['aluno', 'cursos']));
+        if ($aluno) {
+            $cursos = Curso::orderBy('duracao')->get();
+            return view('aluno.edit', compact('aluno', 'cursos'));
         }
 
         return redirect()->route('aluno.index');
@@ -94,24 +99,26 @@ class AlunoController extends Controller
 
         $curso = Curso::find($request->curso);
 
-        if($aluno && $curso) {
+        if ($aluno && $curso) {
+
             $aluno->nome = mb_strtoupper($request->nome, 'UTF-8');
             $aluno->porcao = $request->porcao;
             $aluno->valor = floatval(str_replace(',', '.', $request->valor));
             $aluno->curso()->associate($curso);
 
-            if($request->hasFile('foto')) {
-                // Remove foto antiga
-                if($aluno->foto && Storage::disk('public')->exists($aluno->foto)) {
+            // Substituir foto
+            if ($request->hasFile('foto')) {
+
+                // Excluir foto antiga
+                if ($aluno->foto && Storage::disk('public')->exists($aluno->foto)) {
                     Storage::disk('public')->delete($aluno->foto);
                 }
 
-                // Salva nova foto
-                $request->file('foto')->storeAs('fotos', $name, ['disk' => 'public']);
+                $file = $request->file('foto');
+                $name = $aluno->id . '_' . time() . '.' . $file->getClientOriginalExtension();
 
-                $name = $aluno->id.'_'.time().'.'.$file->getClientOriginalExtension();
                 $file->storeAs('fotos', $name, 'public');
-                $aluno->foto = 'fotos/'.$name;
+                $aluno->foto = 'fotos/' . $name;
             }
 
             $aluno->save();
@@ -128,11 +135,13 @@ class AlunoController extends Controller
         $aluno = Aluno::find($id);
         Gate::authorize('delete', $aluno);
 
-        if($aluno) {
-            // Apaga a foto antes de deletar
-            if($aluno->foto && Storage::disk('public')->exists($aluno->foto)) {
+        if ($aluno) {
+
+            // Remover foto antes de deletar o registro
+            if ($aluno->foto && Storage::disk('public')->exists($aluno->foto)) {
                 Storage::disk('public')->delete($aluno->foto);
             }
+
             $aluno->delete();
         }
 
@@ -144,8 +153,10 @@ class AlunoController extends Controller
      */
     public function report()
     {
-        $alunos = Aluno::with(['curso'])->get();
-        $pdf = Pdf::loadView('aluno.report', ['alunos' => $alunos]);
+        $alunos = Aluno::with('curso')->orderBy('curso_id')->get();
+
+        $pdf = Pdf::loadView('aluno.report', compact('alunos'));
+
         return $pdf->stream('alunos.pdf');
     }
 }

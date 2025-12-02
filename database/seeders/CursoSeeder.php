@@ -14,9 +14,14 @@ class CursoSeeder extends Seeder
     public function run(): void
     {
         $data = [
-            ["nome" => "TÉCNICO EM INFORMÁTICA", "duracao" => 4],
-            ["nome" => "TECNÓLOGO EM DESENVOLVIMENTO", "duracao" => 3],
+            ["nome" => "CAFÉ QUENTE", "duracao" => 1],
+            ["nome" => "CAFÉ GELADO", "duracao" => 2],
+            ["nome" => "BEBIDAS", "duracao" => 3],
+            ["nome" => "DOCES", "duracao" => 4],
+            ["nome" => "SALGADOS", "duracao" => 5],
+            ["nome" => "OUTROS", "duracao" => 6],
         ];
+
         DB::table('cursos')->insert($data);
     }
 }

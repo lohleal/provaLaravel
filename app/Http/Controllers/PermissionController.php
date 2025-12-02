@@ -20,13 +20,15 @@ class PermissionController extends Controller {
         session(['user_permissions' => $arr_permissions]);
     }
 
-    public static function isAuthorized($resource) {
-        $permissions = session('user_permissions');
+  public static function isAuthorized($resource) {
 
-        if(array_key_exists($resource, $permissions)) {
-            return $permissions[$resource];
-        }
+    $permissions = session('user_permissions') ?? [];
 
-        return false;
+    if (array_key_exists($resource, $permissions)) {
+        return $permissions[$resource];
     }
+
+    return false;
+}
+
 }

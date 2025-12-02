@@ -48,6 +48,7 @@ class LoginRequest extends FormRequest
                 'email' => trans('auth.failed'),
             ]);
         }
+         \App\Http\Controllers\PermissionController::loadPermissions(auth()->user()->role_id);
 
         RateLimiter::clear($this->throttleKey());
     }
