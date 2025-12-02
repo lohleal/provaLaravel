@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('alunos', function (Blueprint $table) {
             $table->id();
             $table->string('nome');
-            $table->integer('ano');
+            $table->string('porcao');
+            $table->integer('valor');
             // linhas adicionadas
             $table->string('foto')->nullable();
             $table->unsignedBigInteger('curso_id');

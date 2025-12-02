@@ -7,6 +7,7 @@ use App\Models\Aluno;
 use App\Models\Curso;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 
 class AlunoController extends Controller
 {
@@ -17,7 +18,6 @@ class AlunoController extends Controller
     {
         Gate::authorize('viewAny', Aluno::class);
         $alunos = Aluno::all();
-        // dd($alunos);
         return view('aluno.index', compact('alunos'));
     }
 
@@ -37,20 +37,21 @@ class AlunoController extends Controller
     public function store(Request $request)
     {
         Gate::authorize('create', Aluno::class);
+
         $curso = Curso::find($request->curso);
 
-        if(isset($curso)) {
+        if($curso) {
             $aluno = new Aluno();
             $aluno->nome = mb_strtoupper($request->nome, 'UTF-8');
-            $aluno->ano = $request->ano;
+            $aluno->porcao = $request->porcao;
+            $aluno->valor = $request->valor;
             $aluno->curso()->associate($curso);
             $aluno->save();
 
             if($request->hasFile('foto')) {
-                // Upload File
-                $extensao_arq = $request->file('foto')->getClientOriginalExtension();
-                $name = $aluno->id.'_'.time().'.'.$extensao_arq;
-                $request->file('foto')->storeAs('fotos', $name, ['disk' => 'public']);
+                $file = $request->file('foto');
+                $name = $aluno->id.'_'.time().'.'.$file->getClientOriginalExtension();
+                $file->storeAs('fotos', $name, 'public');
                 $aluno->foto = 'fotos/'.$name;
                 $aluno->save();
             }
@@ -75,7 +76,7 @@ class AlunoController extends Controller
         $aluno = Aluno::find($id);
         Gate::authorize('update', $aluno);
 
-        if(isset($aluno)) {
+        if($aluno) {
             $cursos = Curso::all();
             return view('aluno.edit', compact(['aluno', 'cursos']));
         }
@@ -86,29 +87,40 @@ class AlunoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        $aluno = Aluno::find($id);
-        Gate::authorize('update', $aluno);
-        $curso = Curso::find($request->curso);
+  public function update(Request $request, string $id)
+{
+    $aluno = Aluno::find($id);
+    Gate::authorize('update', $aluno);
 
-        if(isset($curso) && isset($aluno)) {
-            $aluno->nome = mb_strtoupper($request->nome, 'UTF-8');
-            $aluno->ano = $request->ano;
-            $aluno->curso()->associate($curso);
+    $curso = Curso::find($request->curso);
 
-            if($request->hasFile('foto')) {
-                // Upload File
-                $extensao_arq = $request->file('foto')->getClientOriginalExtension();
-                $name = $aluno->id.'_'.time().'.'.$extensao_arq;
-                $request->file('foto')->storeAs('fotos', $name, ['disk' => 'public']);
-                $aluno->foto = 'fotos/'.$name;
+    if($aluno && $curso) {
+        $aluno->nome = mb_strtoupper($request->nome, 'UTF-8');
+        $aluno->porcao = $request->porcao;
+        $aluno->valor = $request->valor;
+        $aluno->curso()->associate($curso);
+
+        // Se enviou nova foto
+        if($request->hasFile('foto')) {
+
+            // excluir foto antiga
+            if($aluno->foto && Storage::disk('public')->exists($aluno->foto)) {
+                Storage::disk('public')->delete($aluno->foto);
             }
-            $aluno->save();
+
+            $file = $request->file('foto');
+            $name = $aluno->id.'_'.time().'.'.$file->getClientOriginalExtension();
+            $file->storeAs('fotos', $name, 'public');
+
+            $aluno->foto = 'fotos/'.$name;
         }
 
-        return redirect()->route('aluno.index');
+        $aluno->save();
     }
+
+    return redirect()->route('aluno.index');
+}
+
 
     /**
      * Remove the specified resource from storage.
@@ -118,20 +130,24 @@ class AlunoController extends Controller
         $aluno = Aluno::find($id);
         Gate::authorize('delete', $aluno);
 
-        if(isset($aluno)) {
+        if($aluno) {
+            // Apaga a foto antes de deletar
+            if($aluno->foto && Storage::disk('public')->exists($aluno->foto)) {
+                Storage::disk('public')->delete($aluno->foto);
+            }
             $aluno->delete();
         }
 
         return redirect()->route('aluno.index');
     }
 
-    public function report() {
+    /**
+     * Generate PDF report.
+     */
+    public function report()
+    {
         $alunos = Aluno::with(['curso'])->get();
-        // Gera um PDF a partir de uma view Blade
         $pdf = Pdf::loadView('aluno.report', ['alunos' => $alunos]);
-        // Exibe o PDF no navegador
-        return $pdf->stream('document.pdf');
-        // Ou Faz o download do PDF
-        // return $pdf->download('document.pdf');
-}
+        return $pdf->stream('alunos.pdf');
+    }
 }
