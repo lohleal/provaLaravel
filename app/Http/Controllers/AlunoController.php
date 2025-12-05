@@ -18,13 +18,22 @@ class AlunoController extends Controller
     {
         Gate::authorize('viewAny', Aluno::class);
 
-        // Lista produtos ordenados pela categoria e pelo nome
         $alunos = Aluno::with('curso')
                        ->orderBy('curso_id')
                        ->orderBy('nome')
                        ->get();
 
-        return view('aluno.index', compact('alunos'));
+        // BUSCA ITENS DO PEDIDO ATUAL
+        $pedidoId = session('pedido_id');
+
+        $itensPedido = [];
+        if ($pedidoId) {
+            $itensPedido = \App\Models\PedidoItem::where('pedido_id', $pedidoId)
+                                                 ->pluck('quantidade', 'produto_id')
+                                                 ->toArray();
+        }
+
+        return view('aluno.index', compact('alunos', 'itensPedido'));
     }
 
     /**

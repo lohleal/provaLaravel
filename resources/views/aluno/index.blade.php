@@ -89,7 +89,7 @@
             <td class="text-center">
                 <div class="d-flex justify-content-center align-items-center gap-2">
                     <button onclick="updateCart({{ $item->id }}, 'decrease')" class="btn btn-outline-danger btn-sm">-</button>
-                    <span id="qty-{{ $item->id }}">{{ session('cart')[$item->id] ?? 0 }}</span>
+                    <span id="qty-{{ $item->id }}">{{ $itensPedido[$item->id] ?? 0 }}</span>
                     <button onclick="updateCart({{ $item->id }}, 'increase')" class="btn btn-outline-success btn-sm">+</button>
                 </div>
             </td>
@@ -137,20 +137,21 @@
 
 <script>
     function updateCart(produtoId, action) {
-        fetch(`/carrinho/update/${produtoId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-            },
-            body: JSON.stringify({ action: action })
-        })
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById("qty-" + produtoId).innerText = data.quantidade;
-        })
-        .catch(err => console.error(err));
-    }
+    fetch(`/carrinho/update/${produtoId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({ action: action })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("qty-" + produtoId).innerText = data.quantidade ?? 0;
+    })
+    .catch(err => console.error(err));
+}
+
 </script>
 
 
@@ -175,10 +176,8 @@ function salvarCliente() {
     .then(() => location.reload());
 }
 </script>
-<form action="{{ route('pedido.finalizar') }}" method="POST" id="finalizarPedidoBtn">
-    @csrf
-    <button type="submit" class="btn-finalizar">Finalizar Pedido</button>
-</form>
+<a href="{{ route('pedido.revisar') }}" class="btn-finalizar">Finalizar Pedido</a>
+
 
 <style>
     #finalizarPedidoBtn {
