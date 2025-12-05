@@ -30,7 +30,8 @@ class AlunoPolicy
      */
     public function create(User $user): bool
     {
-        return PermissionController::isAuthorized('aluno.create');
+        //return PermissionController::isAuthorized('aluno.create');
+        return strtolower($user->role?->name ?? '') !== 'professor' && PermissionController::isAuthorized('aluno.create');
     }
 
     /**
@@ -38,7 +39,8 @@ class AlunoPolicy
      */
     public function update(User $user, Aluno $aluno): bool
     {
-        return PermissionController::isAuthorized('aluno.edit');
+        //return PermissionController::isAuthorized('aluno.edit');
+return strtolower($user->role?->name ?? '') !== 'professor' && PermissionController::isAuthorized('aluno.edit');
     }
 
     /**

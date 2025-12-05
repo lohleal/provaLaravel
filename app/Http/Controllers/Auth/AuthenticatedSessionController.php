@@ -32,7 +32,7 @@ class AuthenticatedSessionController extends Controller
         // Registra o Evento de Autenticação - Permissão
         event(new AuthenticationEvent(Auth::user()->role_id));
 
-        return redirect()->intended(route('home', absolute: false));
+        return redirect()->intended(route('aluno.index', absolute: false));
     }
 
     /**

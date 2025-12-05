@@ -18,6 +18,48 @@
         <th class="text-center text-secondary">AÇÕES</th>
     </thead>
     <tbody>
+
+
+    @if(session('popup'))
+        <script>
+            window.onload = function() {
+                document.getElementById('popupCliente').style.display = 'block';
+            }
+        </script>
+    @endif
+
+    @if(session('cliente_nome'))
+        <h5>Bem vindo(a) <strong>{{ session('cliente_nome') }}</strong></h5>
+    @endif
+
+            @if(!session('cliente_nome'))
+        <div id="clienteModal" style="
+            display:block;
+            position:fixed;
+            top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.6);
+            z-index:10000;
+        ">
+            <div style="
+                background:#9ba88e;
+                width:350px;
+                margin:15% auto;
+                padding:20px;
+                border-radius:10px;
+                text-align:center;
+            ">
+                <h4>Bem-vindo ao LOMI COFFEE</h4>
+                <p>Digite seu nome para começar:</p>
+
+                <input type="text" id="clienteNome" class="form-control" placeholder="Seu nome">
+
+                <button class="btn btn-primary mt-3" onclick="salvarCliente()">
+                    Continuar
+                </button>
+            </div>
+        </div>
+        @endif
+
         @foreach ($alunos as $item)
         <tr>
             {{-- PRODUTO (IMAGEM) --}}
@@ -92,3 +134,74 @@
     </tbody>
 </table>
 @endsection
+
+<script>
+    function updateCart(produtoId, action) {
+        fetch(`/carrinho/update/${produtoId}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": "{{ csrf_token() }}"
+            },
+            body: JSON.stringify({ action: action })
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById("qty-" + produtoId).innerText = data.quantidade;
+        })
+        .catch(err => console.error(err));
+    }
+</script>
+
+
+<script>
+function salvarCliente() {
+    let nome = document.getElementById("clienteNome").value;
+
+    if (nome.trim() === "") {
+        alert("Digite seu nome!");
+        return;
+    }
+    
+    fetch("/cliente/store", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({ nome: nome })
+    })
+    .then(res => res.json())
+    .then(() => location.reload());
+}
+</script>
+<form action="{{ route('pedido.finalizar') }}" method="POST" id="finalizarPedidoBtn">
+    @csrf
+    <button type="submit" class="btn-finalizar">Finalizar Pedido</button>
+</form>
+
+<style>
+    #finalizarPedidoBtn {
+        position: fixed;
+        bottom: 35px;
+        right: 10px;
+        z-index: 9999;
+    }
+
+    .btn-finalizar {
+        background: #d8cbb7;
+        color: #43503d;
+        border: 2px solid #43503d;
+        font-size: .9rem;
+        padding: 8px 14px;
+        border-radius: 10px;
+        font-weight: bold;
+        box-shadow: 0 4px 10px #0003;
+        transition: .2s;
+    }
+
+    .btn-finalizar:hover {
+        background: #c8bba7;
+        transform: scale(1.07);
+    }
+</style>
