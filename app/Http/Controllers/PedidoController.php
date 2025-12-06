@@ -8,18 +8,32 @@ use App\Models\Pedido;
 class PedidoController extends Controller
 {
     public function finalizar(Request $request)
-    {
-        $pedido = Pedido::find(session('pedido_id'));
+{
+    $pedidoId = session('pedido_id');
 
-        if ($pedido) {
-            $pedido->finalizado = true;
-            $pedido->save();
-        }
-
-        session()->forget(['cliente_nome', 'pedido_id']);
-
+    if (!$pedidoId) {
         return redirect('/home')->with('popup', true);
     }
+
+    $pedido = Pedido::find($pedidoId);
+
+    if ($pedido) {
+        $pedido->finalizado = true;
+        $pedido->save();
+    }
+
+    // Limpa tudo da sessão
+    session()->forget([
+        'pedido_id',
+        'cliente_nome',
+        'cart'
+    ]);
+
+    // Volta ao início e abre popup de nome
+    return redirect('/aluno')->with('popup', true);
+}
+
+
 
     public function revisar()
 {
