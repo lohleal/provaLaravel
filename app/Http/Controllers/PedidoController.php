@@ -55,4 +55,29 @@ class PedidoController extends Controller
     return view('pedido.revisar', compact('pedido', 'qrCodeUrl'));
 }
 
+public function lista()
+{
+    $pedidos = \App\Models\Pedido::with('itens.produto')
+        ->orderBy('created_at', 'desc')
+        ->get();
+
+    $cabecalho = "Lista de Pedidos";
+    $rota = "";
+    $relatorio = "";
+
+    return view('pedido.lista', compact('pedidos', 'cabecalho', 'rota', 'relatorio'));
+}
+
+public function pdf($id)
+{
+    $pedido = \App\Models\Pedido::with('itens.produto')->findOrFail($id);
+
+    $pdf = \PDF::loadView('pedido.relatorio', compact('pedido'));
+
+    // NÃO BAIXA — APENAS VISUALIZA NO NAVEGADOR
+    return $pdf->stream("pedido_{$id}.pdf");
+}
+
+
+
 }

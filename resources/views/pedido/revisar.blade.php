@@ -14,7 +14,7 @@
 @else
     @php
         $pedido = \App\Models\Pedido::with('itens.produto')->find(session('pedido_id'));
-        $totalPedido = 0;
+        $totalPedido = $pedido ? $pedido->itens->sum(fn($item) => $item->quantidade * $item->valor) : 0;
     @endphp
 
     @if($pedido && $pedido->itens->count() > 0)
@@ -30,10 +30,6 @@
             </thead>
             <tbody>
                 @foreach($pedido->itens as $item)
-                    @php
-                        $subtotal = $item->quantidade * $item->valor;
-                        $totalPedido += $subtotal;
-                    @endphp
                     <tr>
                         <td>
                             @if($item->produto->foto && file_exists(storage_path('app/public/' . $item->produto->foto)))
@@ -45,7 +41,7 @@
                         <td>{{ $item->produto->nome }}</td>
                         <td>R$ {{ number_format($item->valor, 2, ',', '.') }}</td>
                         <td>{{ $item->quantidade }}</td>
-                        <td>R$ {{ number_format($subtotal, 2, ',', '.') }}</td>
+                        <td>R$ {{ number_format($item->quantidade * $item->valor, 2, ',', '.') }}</td>
                     </tr>
                 @endforeach
             </tbody>

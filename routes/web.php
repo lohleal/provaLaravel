@@ -23,6 +23,14 @@ Route::post('/pedido/finalizar', [PedidoController::class, 'finalizar'])->name('
 
 Route::get('/dashboard', fn() => view('dashboard'))->middleware(['auth', 'verified'])->name('dashboard');
 Route::get('/pedido/revisar', [PedidoController::class, 'revisar'])->name('pedido.revisar');
+Route::get('/pedidos', [PedidoController::class, 'lista'])
+    ->middleware(['auth'])
+    ->name('pedido.lista');
+
+Route::get('/pedidos/{id}/pdf', [PedidoController::class, 'pdf'])
+    ->middleware(['auth'])
+    ->name('pedido.pdf');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
