@@ -12,10 +12,9 @@
 @if(session('tipo_usuario') === 'cliente' && !session('cliente_nome'))
 <div id="clienteModal">
     <div class="popup-content">
-        <h4>Bem-vindo ao LOMI COFFEE</h4>
-        <p>Digite seu nome para começar:</p>
+        <h4>Bem-vindo ao LOMI COFFEE!!</h4>
 
-        <input type="text" id="clienteNome" class="form-control" placeholder="Seu nome">
+        <input type="text" id="clienteNome" class="form-control" placeholder="Digite seu nome">
 
         <button onclick="salvarCliente()" class="btn-popup">Continuar</button>
     </div>
@@ -80,17 +79,17 @@
 <script>
 function updateCart(produtoId, action) {
     fetch(`/carrinho/update/${produtoId}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-            },
-            body: JSON.stringify({ action: action })
-        })
-        .then(res => res.json())
-        .then(data => {
-            document.getElementById("qty-" + produtoId).innerText = data.quantidade ?? 0;
-        });
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({ action: action })
+    })
+    .then(res => res.json())
+    .then(data => {
+        document.getElementById("qty-" + produtoId).innerText = data.quantidade ?? 0;
+    });
 }
 
 function salvarCliente() {
@@ -102,20 +101,20 @@ function salvarCliente() {
     }
 
     fetch("/cliente/store", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": "{{ csrf_token() }}"
-            },
-            body: JSON.stringify({ nome: nome })
-        })
-        .then(res => res.json())
-        .then(() => location.reload());
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": "{{ csrf_token() }}"
+        },
+        body: JSON.stringify({ nome: nome })
+    })
+    .then(res => res.json())
+    .then(() => location.reload());
 }
 </script>
 
 <style>
-    /* Fundo da página */
+/* Fundo da página */
 body {
     background-color: #c8d5b9; /* verde musgo pastel clara */
     margin: 0;
@@ -124,30 +123,75 @@ body {
 
 /* Modal */
 #clienteModal {
-    display: block;
     position: fixed;
-    top: 0; 
-    left: 0; 
-    width: 100%; 
+    top: 0;
+    left: 0;
+    width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.6);
-    z-index: 10000;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
 }
 
-.modal-content-lomi {
-    background: #9ba88e;
-    width: 350px;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 10px;
+#clienteModal .popup-content {
+    background: #f7e9d8;
+    border: 3px solid #43503d;
+    border-radius: 20px;
+    padding: 40px 40px;
+    width: 400px;
     text-align: center;
+    box-shadow: 0 6px 25px #0006;
+    color: #4b2e1e;
+    font-family: Georgia, serif;
+}
+
+/* Input arredondado e centralizado */
+/* Input arredondado e centralizado */
+#clienteModal .form-control {
+    display: block;       /* faz o input se comportar como bloco */
+    width: 90%;           /* largura do input */
+    padding: 10px 16px;
+    border-radius: 25px;  /* totalmente arredondado */
+    border: 2px solid #43503d;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+    text-align: center;
+    margin: 20px auto;    /* centraliza horizontalmente */
+}
+
+
+#clienteModal .form-control:focus {
+    border-color: #c8bba7;
+    box-shadow: 0 0 5px #c8bba7;
+}
+
+/* Botão centralizado */
+.btn-popup {
+    display: inline-block;
+    margin: 0 auto;
+    background: #d8cbb7;
+    color: #43503d;
+    border: 2px solid #43503d;
+    padding: 10px 22px;
+    border-radius: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.btn-popup:hover {
+    background: #c8bba7;
+    transform: scale(1.07);
 }
 
 /* Botões fixos */
 .btn-finalizar, .btn-voltar-login {
     position: fixed;
     bottom: 35px;
-    background: #43503E; /* mesmo tom que estava antes */
+    background: #43503E;
     color: #fff;
     border: 2px solid #43503E;
     padding: 8px 14px;
@@ -158,34 +202,30 @@ body {
     transition: .2s;
     z-index: 1000;
 }
-.btn-finalizar {
-    right: 10px;
-}
-.btn-voltar-login {
-    left: 10px;
-}
+
+.btn-finalizar { right: 10px; }
+.btn-voltar-login { left: 10px; }
 .btn-finalizar:hover, .btn-voltar-login:hover {
-    background: #c8bba7; /* tom ligeiramente mais escuro */
+    background: #c8bba7;
     border-color: #c8bba7;
     transform: scale(1.07);
 }
 
-/* Fundo da página / cardápio */
+/* Cardápio */
 .produtos-cards {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: center;
     margin-top: 20px;
-    background-color: #c8d5b9; /* verde musgo pastel clara */
+    background-color: #c8d5b9;
     padding: 20px;
     border-radius: 10px;
 }
 
-/* Card do produto */
 .card-produto {
     width: 200px;
-    background: #e4ebd8; /* tom claro, harmonizando com o fundo */
+    background: #e4ebd8;
     border-radius: 10px;
     padding: 10px;
     text-align: center;
@@ -196,7 +236,6 @@ body {
 .card-produto:hover {
     transform: scale(1.05);
 }
-
 
 .img-produto-card {
     width: 100%;
@@ -232,49 +271,5 @@ body {
     background: #ddd;
     border-radius: 10px;
     color: #666;
-}
-</style>
-
-<style>
-#clienteModal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.55);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 99999;
-}
-
-#clienteModal .popup-content {
-    background: #f7e9d8;
-    border: 3px solid #43503d;
-    border-radius: 18px;
-    padding: 30px;
-    width: 330px;
-    text-align: center;
-    box-shadow: 0 4px 20px #0006;
-    color: #4b2e1e;
-    font-family: Georgia, serif;
-}
-
-.btn-popup {
-    margin-top: 15px;
-    background: #d8cbb7;
-    color: #43503d;
-    border: 2px solid #43503d;
-    padding: 10px 18px;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: .2s;
-}
-
-.btn-popup:hover {
-    background: #c8bba7;
-    transform: scale(1.07);
 }
 </style>

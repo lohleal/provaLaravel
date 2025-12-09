@@ -11,7 +11,7 @@
     <style>
         .nav-pills .nav-link.active {
             color: #FFF !important;
-            background-color: #6c757d !important;
+            background-color: #6d7d6cff !important;
         }
 
         .nav-pills .nav-link {
@@ -21,11 +21,12 @@
 </head>
 
 <body>
+    @if(session('tipo_usuario') !== 'cliente')
     <nav class="navbar sticky-top navbar-expand-md navbar-dark bg-secondary">
         <div class="container-fluid">
             <a href="{{ route('home') }}" class="navbar-brand">
                 <img src="{{ asset('assets/img/logo_ifpr.png') }}" style="border-radius: 25%;" width="56" height="56">
-                <span class="ms-2 fs-4 fw-bold">Sistema Aula</span>
+                <span class="ms-2 fs-4 fw-bold">Cafeteria LOMI</span>
             </a>
             <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#itens">
                 <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-menu-button-wide" viewBox="0 0 16 16">
@@ -33,36 +34,27 @@
                     <path d="M2 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm10.823.323-.396-.396A.25.25 0 0 1 12.604 2h.792a.25.25 0 0 1 .177.427l-.396.396a.25.25 0 0 1-.354 0zM0 8a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V8zm1 3v2a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2H1zm14-1V8a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2h14zM2 8.5a.5.5 0 0 1 .5-.5h9a.5.5 0 0 1 0 1h-9a.5.5 0 0 1-.5-.5zm0 4a.5.5 0 0 1 .5-.5h6a.5.5 0 0 1 0 1h-6a.5.5 0 0 1-.5-.5z" />
                 </svg>
             </button>
-            <a href="{{ route('pedido.lista') }}" class="btn btn-secondary ms-2">
-                Pedidos
-            </a>
+            
 
             <div class="collapse navbar-collapse" id="itens">
                 <ul class="navbar-nav ms-auto">
 
-                    @can('viewAny', App\Models\Produto::class)
-                    <li class="nav-item me-2">
-                        <a href="{{ route('produto.index') }}" class="nav-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#FFF" class="bi bi-mortarboard-fill" viewBox="0 0 16 16">
-                                <path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917z" />
-                                <path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466z" />
-                            </svg>
-                            <span class="ps-1 text-white">Produtos</span>
-                        </a>
-                    </li>
-                    @endcan
+               <li class="nav-item me-2">
+    <a href="{{ route('pedido.lista') }}" class="nav-link d-flex align-items-center">
+        
+        <span class="ps-1 text-white" style="font-size: 1.2rem;">📄 Pedidos</span>
+    </a>
+</li>
 
-                    @can('viewAny', App\Models\Curso::class)
-                    <li class="nav-item me-2">
-                        <a href="" class="nav-link">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#FFF" class="bi bi-easel2-fill" viewBox="0 0 16 16">
-                                <path d="M8.447.276a.5.5 0 0 0-.894 0L7.19 1H2.5A1.5 1.5 0 0 0 1 2.5V10h14V2.5A1.5 1.5 0 0 0 13.5 1H8.809z" />
-                                <path fill-rule="evenodd" d="M.5 11a.5.5 0 0 0 0 1h2.86l-.845 3.379a.5.5 0 0 0 .97.242L3.89 14h8.22l.405 1.621a.5.5 0 0 0 .97-.242L12.64 12h2.86a.5.5 0 0 0 0-1zm3.64 2 .25-1h7.22l.25 1z" />
-                            </svg>
-                            <span class="ps-1 text-white">Cursos</span>
-                        </a>
-                    </li>
-                    @endcan
+@can('viewAny', App\Models\Produto::class)
+<li class="nav-item me-2">
+    <a href="{{ route('produto.index') }}" class="nav-link d-flex align-items-center">
+      
+        <span class="ps-1 text-white" style="font-size: 1.2rem;">🍵 Produtos</span>
+    </a>
+</li>
+@endcan
+
 
                     <li class="nav-item dropdown pe-3">
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">
@@ -102,6 +94,7 @@
             </div>
         </div>
     </nav>
+    @endif
     <div class="container py-4">
         <div class="row">
             <div class="col">
