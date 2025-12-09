@@ -8,11 +8,11 @@
 
 @section('conteudo')
 
-{{-- DEBUG TEMPORÁRIO --}}
+{{-- DEBUG TEMPORÁRIO 
 <div style="background:black; color:white; padding:10px; margin-bottom:20px;">
     tipo_usuario = {{ session('tipo_usuario') ?? 'NULL' }} <br>
     cliente_nome = {{ session('cliente_nome') ?? 'NULL' }}
-</div>
+</div>--}}
 
 {{-- POPUP SOMENTE PARA CLIENTE SEM NOME DEFINIDO --}}
 @if(session('tipo_usuario') === 'cliente' && !session('cliente_nome'))
@@ -45,7 +45,7 @@
 
 {{-- TÍTULO DE BOAS-VINDAS --}}
 @if(session('cliente_nome'))
-    <h5>Bem vindo(a) <strong>{{ session('cliente_nome') }}</strong></h5>
+<h5>Bem vindo(a) <strong>{{ session('cliente_nome') }}</strong></h5>
 @endif
 
 
@@ -56,7 +56,10 @@
         <th class="d-none d-md-table-cell text-secondary">CATEGORIA</th>
         <th class="d-none d-md-table-cell text-secondary">PORÇÕES</th>
         <th class="d-none d-md-table-cell text-secondary">VALOR</th>
+        @if(session('tipo_usuario') === 'cliente')
         <th class="text-center text-secondary">CARRINHO</th>
+        @endif
+
         <th class="text-center text-secondary">AÇÕES</th>
     </thead>
     <tbody>
@@ -87,6 +90,7 @@
             <td class="d-none d-md-table-cell">{{ $item->valor }}</td>
 
             {{-- CARRINHO --}}
+            @if(session('tipo_usuario') === 'cliente')
             <td class="text-center">
                 <div class="d-flex justify-content-center align-items-center gap-2">
                     <button onclick="updateCart({{ $item->id }}, 'decrease')" class="btn btn-outline-danger btn-sm">-</button>
@@ -94,6 +98,8 @@
                     <button onclick="updateCart({{ $item->id }}, 'increase')" class="btn btn-outline-success btn-sm">+</button>
                 </div>
             </td>
+            @endif
+
 
             {{-- AÇÕES --}}
             <td class="text-center">
@@ -144,7 +150,9 @@
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": "{{ csrf_token() }}"
                 },
-                body: JSON.stringify({ action: action })
+                body: JSON.stringify({
+                    action: action
+                })
             })
             .then(res => res.json())
             .then(data => {
@@ -168,14 +176,19 @@
                     "Content-Type": "application/json",
                     "X-CSRF-TOKEN": "{{ csrf_token() }}"
                 },
-                body: JSON.stringify({ nome: nome })
+                body: JSON.stringify({
+                    nome: nome
+                })
             })
             .then(res => res.json())
             .then(() => location.reload());
     }
 </script>
 
-<a href="{{ route('pedido.revisar') }}" class="btn-finalizar">Finalizar Pedido</a>
+@if(session('tipo_usuario') === 'cliente')
+    <a href="{{ route('pedido.revisar') }}" class="btn-finalizar">Finalizar Pedido</a>
+@endif
+
 
 <style>
     .btn-finalizar {

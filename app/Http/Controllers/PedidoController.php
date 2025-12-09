@@ -7,93 +7,102 @@ use App\Models\Pedido;
 
 class PedidoController extends Controller
 {
+    // ============================
+    // CLIENTE FINALIZA O PEDIDO
+    // ============================
     public function finalizar(Request $request)
-{
-    $pedidoId = session('pedido_id');
+    {
+        $pedidoId = session('pedido_id');
 
-    if (!$pedidoId) {
-        return redirect('/home')->with('popup', true);
+        if (!$pedidoId) {
+            return redirect('/home')->with('popup', true);
+        }
+
+        $pedido = Pedido::find($pedidoId);
+
+        if ($pedido) {
+            $pedido->finalizado = 1; // CLIENTE FINALIZOU O PEDIDO
+            $pedido->save();
+        }
+
+        // Limpa tudo da sessão
+        session()->forget([
+            'pedido_id',
+            'cliente_nome',
+            'cart'
+        ]);
+
+        // Volta ao início e abre popup de nome para novo cliente
+        return redirect('/aluno')->with('popup', true);
     }
 
-    $pedido = Pedido::find($pedidoId);
 
-    if ($pedido) {
-        $pedido->finalizado = true;
-        $pedido->save();
-    }
-
-    // Limpa tudo da sessão
-    session()->forget([
-        'pedido_id',
-        'cliente_nome',
-        'cart'
-    ]);
-
-    // Volta ao início e abre popup de nome
-    return redirect('/aluno')->with('popup', true);
-}
-
-
-
+    // ============================
+    // CLIENTE REVISAR PEDIDO
+    // ============================
     public function revisar()
-{
-    $pedidoId = session('pedido_id');
+    {
+        $pedidoId = session('pedido_id');
 
-    if (!$pedidoId) {
-        return redirect()->route('home')->with('error', 'Nenhum pedido encontrado.');
+        if (!$pedidoId) {
+            return redirect()->route('home')->with('error', 'Nenhum pedido encontrado.');
+        }
+
+        $pedido = Pedido::with('itens.produto')->find($pedidoId);
+
+        if (!$pedido) {
+            return redirect()->route('home')->with('error', 'Pedido não encontrado.');
+        }
+
+        // Exemplo de QR Code (caso tenha)
+        $qrCodeUrl = asset('storage/qrcode.png');
+
+        return view('pedido.revisar', compact('pedido', 'qrCodeUrl'));
     }
 
-    $pedido = \App\Models\Pedido::with('itens.produto')->find($pedidoId);
 
-    if (!$pedido) {
-        return redirect()->route('home')->with('error', 'Pedido não encontrado.');
+    // ============================
+    // FUNCIONÁRIO — LISTA PEDIDOS
+    // ============================
+    public function lista()
+    {
+        // SOMENTE pedidos que o cliente finalizou (1)
+        $pedidos = Pedido::with('itens.produto')
+            ->where('finalizado', 1)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $cabecalho = "Lista de Pedidos";
+        $rota = "";
+        $relatorio = "";
+
+        return view('pedido.lista', compact('pedidos', 'cabecalho', 'rota', 'relatorio'));
     }
 
-    // Aqui você pode colocar o caminho do QR Code
-    $qrCodeUrl = asset('storage/qrcode.png'); // substitua pelo caminho real
 
-    return view('pedido.revisar', compact('pedido', 'qrCodeUrl'));
-}
+    // ============================
+    // FUNCIONÁRIO CONCLUI O PEDIDO
+    // ============================
+    public function concluir($id)
+    {
+        $pedido = Pedido::findOrFail($id);
 
-public function lista()
-{
-    // Filtra apenas pedidos não finalizados
-    $pedidos = \App\Models\Pedido::with('itens.produto')
-        ->where('finalizado', 0)
-        ->orderBy('created_at', 'desc')
-        ->get();
-
-    $cabecalho = "Lista de Pedidos";
-    $rota = "";
-    $relatorio = "";
-
-    return view('pedido.lista', compact('pedidos', 'cabecalho', 'rota', 'relatorio'));
-}
-
-public function concluir($id)
-{
-    $pedido = Pedido::find($id);
-
-    if ($pedido) {
-        $pedido->finalizado = 1; // marca como concluído
+        $pedido->finalizado = 2; // FUNCIONÁRIO ATENDEU
         $pedido->save();
+
         return response()->json(['success' => true]);
     }
 
-    return response()->json(['success' => false], 404);
-}
 
+    // ============================
+    // GERAR PDF DA COMANDA
+    // ============================
+    public function pdf($id)
+    {
+        $pedido = Pedido::with('itens.produto')->findOrFail($id);
 
-public function pdf($id)
-{
-    $pedido = \App\Models\Pedido::with('itens.produto')->findOrFail($id);
+        $pdf = \PDF::loadView('pedido.relatorio', compact('pedido'));
 
-    $pdf = \PDF::loadView('pedido.relatorio', compact('pedido'));
-
-    // NÃO BAIXA — APENAS VISUALIZA NO NAVEGADOR
-    return $pdf->stream("pedido_{$id}.pdf");
-}
-
-
-
+        return $pdf->stream("pedido_{$id}.pdf");
+    }
 }
