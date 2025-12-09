@@ -26,7 +26,6 @@ Route::get('/pedido/revisar', [PedidoController::class, 'revisar'])->name('pedid
 Route::get('/pedidos', [PedidoController::class, 'lista'])
     ->middleware(['auth'])
     ->name('pedido.lista');
-    // web.php
 
 Route::post('/pedido/concluir/{id}', [PedidoController::class, 'concluir'])->name('pedido.concluir');
 

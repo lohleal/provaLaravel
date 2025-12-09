@@ -24,16 +24,35 @@ class AuthenticatedSessionController extends Controller
      * Handle an incoming authentication request.
      */
     public function store(LoginRequest $request): RedirectResponse
-    {
-        $request->authenticate();
+{
+    $request->authenticate();
 
-        $request->session()->regenerate();
+    $request->session()->regenerate();
 
-        // Registra o Evento de Autenticação - Permissão
-        event(new AuthenticationEvent(Auth::user()->role_id));
+    event(new AuthenticationEvent(Auth::user()->role_id));
 
-        return redirect()->intended(route('aluno.index', absolute: false));
+    // ===========================
+    // DEFINE TIPO DE USUÁRIO
+    // ===========================
+    if (Auth::user()->role_id == 1) {
+        // Login de cliente (professor)
+        session(['tipo_usuario' => 'cliente']);
+        
+        // IMPORTANTE: não salvar nome de cliente aqui
+        // O nome REAL virá do popup
+        session()->forget('cliente_nome');
+    } 
+    else {
+        // Funcionário / coordenador
+        session(['tipo_usuario' => 'funcionario']);
+
+        // Funcionário nunca terá popup → garantimos isso
+        session()->forget('cliente_nome');
     }
+
+    return redirect()->intended(route('aluno.index', absolute: false));
+}
+
 
     /**
      * Destroy an authenticated session.
@@ -43,7 +62,6 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->invalidate();
-
         $request->session()->regenerateToken();
 
         return redirect('/');
