@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pedido_itens', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pedido_id')->constrained('pedidos')->onDelete('cascade');
-            $table->foreignId('produto_id')->constrained('alunos')->onDelete('cascade'); // seu produto
+            $table->foreignId('produto_id')->constrained('produtos')->onDelete('cascade'); // seu produto
             $table->integer('quantidade')->default(1);
             $table->float('valor');
             $table->timestamps();

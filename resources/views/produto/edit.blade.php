@@ -1,14 +1,17 @@
 @extends('templates/main',
     [
         'titulo'=>"Sistema Aula",
-        'cabecalho' => 'Novo Aluno',
+        'cabecalho' => 'Alterar Produto',
         'rota' => '',
         'relatorio' => '',
     ]
 )
 @section('conteudo')
-    <form action="{{route('aluno.store')}}" method="POST" enctype="multipart/form-data">
+
+    <form action="{{route('produto.update', $produto->id)}}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
+
         <div class="row">
             <div class="col" >
                 <div class="input-group mb-3">
@@ -17,6 +20,7 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col" >
                 <div class="form-floating mb-3">
@@ -25,19 +29,21 @@
                         class="form-control"
                         name="nome"
                         placeholder="Nome"
-                        value="{{old('nome')}}"
+                        value="{{ $produto->nome }}"
                     />
                     <label for="nome">Nome do Produto</label>
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col" >
                 <div class="input-group mb-3">
                     <span class="input-group-text bg-secondary text-white">Categoria</span>
                     <select name="curso" class="form-select form-control">
                         @foreach ($cursos as $item)
-                            <option value="{{$item->id}}" @if($item->id == old('curso')) selected="true" @endif>
+                            <option value="{{$item->id}}"
+                                @if($item->id == $produto->curso_id) selected="true" @endif>
                                 {{ $item->nome }}
                             </option>
                         @endforeach
@@ -53,8 +59,8 @@
                         type="text"
                         class="form-control"
                         name="porcao"
-                        placeholder="Porcao"
-                        value="{{old('porcao')}}"
+                        placeholder="Porções"
+                        value="{{ $produto->porcao }}"
                     />
                     <label for="porcao">Porções</label>
                 </div>
@@ -65,11 +71,11 @@
             <div class="col" >
                 <div class="form-floating mb-3">
                     <input
-                        type="text"
+                        type="number"
                         class="form-control"
                         name="valor"
                         placeholder="Valor"
-                        value="{{old('valor')}}"
+                        value="{{ $produto->valor }}"
                     />
                     <label for="valor">Valor</label>
                 </div>
@@ -78,12 +84,13 @@
 
         <div class="row mb-5">
             <div class="col">
-                <a href="{{route('aluno.index')}}" class="btn btn-secondary btn-block align-content-center">
+                <a href="{{route('produto.index')}}" class="btn btn-secondary btn-block align-content-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-left-square-fill" viewBox="0 0 16 16">
                         <path d="M16 14a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12zm-4.5-6.5H5.707l2.147-2.146a.5.5 0 1 0-.708-.708l-3 3a.5.5 0 0 0 0 .708l3 3a.5.5 0 0 0 .708-.708L5.707 8.5H11.5a.5.5 0 0 0 0-1z"/>
                     </svg>
                     &nbsp; Voltar
                 </a>
+
                 <button type="submit" class="btn btn-success btn-block align-content-center">
                     Confirmar &nbsp;
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
@@ -93,4 +100,5 @@
             </div>
         </div>
     </form>
+
 @endsection

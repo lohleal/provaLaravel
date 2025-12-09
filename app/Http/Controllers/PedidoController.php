@@ -33,7 +33,7 @@ class PedidoController extends Controller
         ]);
 
         // Volta ao início e abre popup de nome para novo cliente
-        return redirect('/aluno')->with('popup', true);
+        return redirect('/produto')->with('popup', true);
     }
 
 

@@ -20,12 +20,12 @@ class ResourceSeeder extends Seeder
             ["name" => "curso.show"],       // 3
             ["name" => "curso.edit"],       // 4
             ["name" => "curso.delete"],     // 5
-            // ALUNO
-            ["name" => "aluno.index"],      // 6
-            ["name" => "aluno.create"],     // 7
-            ["name" => "aluno.show"],       // 8
-            ["name" => "aluno.edit"],       // 9
-            ["name" => "aluno.delete"],     // 10
+            // PRODUTO
+            ["name" => "produto.index"],      // 6
+            ["name" => "produto.create"],     // 7
+            ["name" => "produto.show"],       // 8
+            ["name" => "produto.edit"],       // 9
+            ["name" => "produto.delete"],     // 10
         ];
         DB::table('resources')->insert($data);
     }

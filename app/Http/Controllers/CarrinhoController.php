@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pedido;
 use App\Models\PedidoItem;
-use App\Models\Aluno;
+use App\Models\Produto;
 
 class CarrinhoController extends Controller
 {
@@ -22,7 +22,7 @@ class CarrinhoController extends Controller
             return response()->json(['quantidade' => 0, 'error' => 'Pedido não encontrado'], 400);
         }
 
-        $produto = Aluno::find($id);
+        $produto = Produto::find($id);
         if (!$produto) {
             return response()->json(['quantidade' => 0, 'error' => 'Produto não encontrado'], 400);
         }

@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Relatório de Alunos - Sistema Aula </title>
+    <title>Relatório de Produtos - Sistema Aula </title>
     <style>
 
         body {
@@ -149,22 +149,22 @@
     <div class="texto-restrito-baixo" style="position: absolute; bottom: 1px;"> DOCUMENTO GERADO PELO SISTEMA AULA </div>
 
     <div class="identification-header">IDENTIFICAÇÃO</div>
-    @foreach($alunos as $aluno)
+    @foreach($produtos as $produto)
         <table class="info-table identification-section">
             <tbody>
                 <tr>
                     <td class="photo-cell" >
-                        @if($aluno->foto)
-                            <img src="{{ public_path('storage/' . $aluno->foto) }}" style="width: 120px; height: auto;">
+                        @if($produto->foto)
+                            <img src="{{ public_path('storage/' . $produto->foto) }}" style="width: 120px; height: auto;">
                         @else
                             FOTO
                         @endif
                     </td>
                     <td>
                         <table class="inner-table">
-                            <tr><td class="label table-label">NOME:</td><td style="width: 305px;">{{ $aluno->nome }}</td></tr>
-                            <tr><td class="label">CURSO:</td><td>{{ $aluno->curso->nome }}</td></tr>
-                            <tr><td class="label">ANO:</td><td>{{ $aluno->ano }}</td></tr>
+                            <tr><td class="label table-label">NOME:</td><td style="width: 305px;">{{ $produto->nome }}</td></tr>
+                            <tr><td class="label">CURSO:</td><td>{{ $produto->curso->nome }}</td></tr>
+                            <tr><td class="label">ANO:</td><td>{{ $produto->ano }}</td></tr>
                             <tr><td class="label">NATURALIDADE:</td><td>  </td></tr>
                             <tr><td class="label">MÃE:</td><td>  </td></tr>
                             <tr><td class="label">PAI:</td><td>  </td></tr>

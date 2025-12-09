@@ -20,7 +20,7 @@ class PermissionSeeder extends Seeder
             ["role_id" => 1, "resource_id" => 3, "permission" => 0],
             ["role_id" => 1, "resource_id" => 4, "permission" => 0],
             ["role_id" => 1, "resource_id" => 5, "permission" => 0],
-            // PROFESSOR - ALUNO
+            // PROFESSOR - PRODUTO
             ["role_id" => 1, "resource_id" => 6, "permission" => 1],
             ["role_id" => 1, "resource_id" => 7, "permission" => 1],
             ["role_id" => 1, "resource_id" => 8, "permission" => 1],
@@ -32,7 +32,7 @@ class PermissionSeeder extends Seeder
             ["role_id" => 2, "resource_id" => 3, "permission" => 1],
             ["role_id" => 2, "resource_id" => 4, "permission" => 1],
             ["role_id" => 2, "resource_id" => 5, "permission" => 1],
-            // COORDENADOR - ALUNO
+            // COORDENADOR - PRODUTO
             ["role_id" => 2, "resource_id" => 6, "permission" => 1],
             ["role_id" => 2, "resource_id" => 7, "permission" => 1],
             ["role_id" => 2, "resource_id" => 8, "permission" => 1],

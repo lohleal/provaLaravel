@@ -1,7 +1,7 @@
 <?php
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AlunoController;
+use App\Http\Controllers\produtoController;
 use App\Http\Controllers\CursoController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\CarrinhoController;
@@ -14,8 +14,8 @@ Route::get('/home', fn() => view('home'))
     ->middleware(['auth', 'verified']);
 
 Route::resource('/curso', CursoController::class)->middleware(['auth', 'verified']);
-Route::resource('/aluno', AlunoController::class)->middleware(['auth', 'verified']);
-Route::get('/report/aluno', [AlunoController::class, 'report'])->name('report.aluno')->middleware(['auth', 'verified']);
+Route::resource('/produto', ProdutoController::class)->middleware(['auth', 'verified']);
+Route::get('/report/produto', [ProdutoController::class, 'report'])->name('report.produto')->middleware(['auth', 'verified']);
 
 Route::post('/cliente/store', [ClienteController::class, 'store'])->name('cliente.store');
 Route::post('/carrinho/update/{id}', [CarrinhoController::class, 'update'])->name('carrinho.update');

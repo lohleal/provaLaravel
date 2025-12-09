@@ -50,7 +50,7 @@ class AuthenticatedSessionController extends Controller
         session()->forget('cliente_nome');
     }
 
-    return redirect()->intended(route('aluno.index', absolute: false));
+    return redirect()->intended(route('produto.index', absolute: false));
 }
 
 
