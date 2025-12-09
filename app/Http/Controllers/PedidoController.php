@@ -57,7 +57,9 @@ class PedidoController extends Controller
 
 public function lista()
 {
+    // Filtra apenas pedidos não finalizados
     $pedidos = \App\Models\Pedido::with('itens.produto')
+        ->where('finalizado', 0)
         ->orderBy('created_at', 'desc')
         ->get();
 
@@ -67,6 +69,20 @@ public function lista()
 
     return view('pedido.lista', compact('pedidos', 'cabecalho', 'rota', 'relatorio'));
 }
+
+public function concluir($id)
+{
+    $pedido = Pedido::find($id);
+
+    if ($pedido) {
+        $pedido->finalizado = 1; // marca como concluído
+        $pedido->save();
+        return response()->json(['success' => true]);
+    }
+
+    return response()->json(['success' => false], 404);
+}
+
 
 public function pdf($id)
 {

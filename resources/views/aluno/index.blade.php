@@ -19,7 +19,6 @@
     </thead>
     <tbody>
 
-
     @if(session('popup'))
         <script>
             window.onload = function() {
@@ -133,6 +132,12 @@
         @endforeach
     </tbody>
 </table>
+
+<!-- Botão de Voltar para Login -->
+<a href="{{ route('login') }}" class="btn-voltar-login">
+    🔙 Voltar para Login
+</a>
+
 @endsection
 
 <script>
@@ -203,4 +208,27 @@ function salvarCliente() {
         background: #c8bba7;
         transform: scale(1.07);
     }
+
+
+.btn-voltar-login {
+    position: fixed;
+    bottom: 35px;
+    left: 10px; /* esquerda, para não ficar junto do botão finalizar */
+    z-index: 9999;
+    background: #f5f5f5;
+    color: #333;
+    border: 2px solid #333;
+    font-size: .9rem;
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-weight: bold;
+    box-shadow: 0 4px 10px #0003;
+    transition: .2s;
+    text-decoration: none;
+}
+
+.btn-voltar-login:hover {
+    background: #e0e0e0;
+    transform: scale(1.07);
+}
 </style>
