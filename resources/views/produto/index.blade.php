@@ -11,15 +11,13 @@
 {{-- POPUP SOMENTE PARA CLIENTE SEM NOME DEFINIDO --}}
 @if(session('tipo_usuario') === 'cliente' && !session('cliente_nome'))
 <div id="clienteModal">
-    <div class="modal-content-lomi">
+    <div class="popup-content">
         <h4>Bem-vindo ao LOMI COFFEE</h4>
         <p>Digite seu nome para começar:</p>
 
         <input type="text" id="clienteNome" class="form-control" placeholder="Seu nome">
 
-        <button class="btn btn-primary mt-3" onclick="salvarCliente()">
-            Continuar
-        </button>
+        <button onclick="salvarCliente()" class="btn-popup">Continuar</button>
     </div>
 </div>
 @endif
@@ -234,5 +232,49 @@ body {
     background: #ddd;
     border-radius: 10px;
     color: #666;
+}
+</style>
+
+<style>
+#clienteModal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+}
+
+#clienteModal .popup-content {
+    background: #f7e9d8;
+    border: 3px solid #43503d;
+    border-radius: 18px;
+    padding: 30px;
+    width: 330px;
+    text-align: center;
+    box-shadow: 0 4px 20px #0006;
+    color: #4b2e1e;
+    font-family: Georgia, serif;
+}
+
+.btn-popup {
+    margin-top: 15px;
+    background: #d8cbb7;
+    color: #43503d;
+    border: 2px solid #43503d;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn-popup:hover {
+    background: #c8bba7;
+    transform: scale(1.07);
 }
 </style>

@@ -121,7 +121,6 @@
 </head>
 <body>
     <div class="texto-marca-dagua"> IFPR - PARANAGUÁ </div>
-    <div class="texto-restrito-cima"> DOCUMENTO GERADO PELO SISTEMA AULA </div>
     <hr>
     <table style="margin: 0px auto; width: 100%">
         <tbody>
@@ -130,10 +129,8 @@
                     <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/assets/img/logo_ifpr.png'))) }}" width="78" height="78" style="border-radius: 25%;">
                 </td>
                 <td style="width: 1fr; text-align: center;">
-                    <span style="font-size: 18px;">GOVERNO FEDERAL DO BRASIL</span>
-                    <div style="font-size: 18px;">MINISTÉRIO DA EDUCAÇÃO</div>
-                    <div style="font-size: 18px; font-weight: bold;">INSTITUTO FEDERAL</div>
-                    <div style="font-size: 18px; font-weight: bold;">PARANAGUÁ</div>
+                    <div style="font-size: 18px;">Relatório Mensal de Vendas</div>
+                    <div style="font-size: 18px; font-weight: bold;">LOMI COFFEE</div>
                 </td>
                 <td style="width: 75px; text-align: right;">
                     <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('/assets/img/logo_ifpr.png'))) }}" width="90" height="90" style="border-radius: 25%;">
@@ -148,7 +145,7 @@
 
     <div class="texto-restrito-baixo" style="position: absolute; bottom: 1px;"> DOCUMENTO GERADO PELO SISTEMA AULA </div>
 
-    <div class="identification-header">IDENTIFICAÇÃO</div>
+    <div class="identification-header">PRODUTOS</div>
     @foreach($produtos as $produto)
         <table class="info-table identification-section">
             <tbody>
@@ -161,14 +158,31 @@
                         @endif
                     </td>
                     <td>
-                        <table class="inner-table">
-                            <tr><td class="label table-label">NOME:</td><td style="width: 305px;">{{ $produto->nome }}</td></tr>
-                            <tr><td class="label">CURSO:</td><td>{{ $produto->curso->nome }}</td></tr>
-                            <tr><td class="label">ANO:</td><td>{{ $produto->ano }}</td></tr>
-                            <tr><td class="label">NATURALIDADE:</td><td>  </td></tr>
-                            <tr><td class="label">MÃE:</td><td>  </td></tr>
-                            <tr><td class="label">PAI:</td><td>  </td></tr>
-                        </table>
+                       <table class="inner-table">
+    <tr>
+        <td class="label table-label">NOME:</td>
+        <td style="width: 305px;">{{ $produto->nome }}</td>
+    </tr>
+    <tr>
+        <td class="label">CATEGORIA:</td>
+        <td>{{ $produto->curso->nome ?? '-' }}</td>
+    </tr>
+    <tr>
+        <td class="label">VALOR UNITÁRIO:</td>
+        <td>R$ {{ number_format($produto->valor, 2, ',', '.') }}</td>
+    </tr>
+ <tr>
+    <td class="label">QUANT. VENDIDA:</td>
+    <td>{{ $produto->quantidade_vendida ?? 0 }}</td>
+</tr>
+<tr>
+    <td class="label">VALOR TOTAL:</td>
+    <td>R$ {{ number_format($produto->valor_total ?? 0, 2, ',', '.') }}</td>
+</tr>
+
+
+</table>
+
                     </td>
                 </tr>
             </tbody>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Pedido;
+ use App\Models\Produto;
 
 class PedidoController extends Controller
 {
@@ -105,4 +106,46 @@ class PedidoController extends Controller
 
         return $pdf->stream("pedido_{$id}.pdf");
     }
+
+   
+
+
+public function relatorioMensal()
+{
+    // Pega todos os pedidos finalizados do mês atual
+    $pedidos = Pedido::with('itens.produto')
+        ->where('finalizado', 1)
+        ->whereMonth('created_at', now()->month)
+        ->get();
+
+    // Pega todos os produtos
+    $produtos = Produto::all()->map(function ($produto) use ($pedidos) {
+        $quantidadeVendida = 0;
+
+        // Percorre todos os pedidos
+        foreach ($pedidos as $pedido) {
+            foreach ($pedido->itens as $item) {
+                if ($item->produto_id == $produto->id) {
+                    // Soma a quantidade vendida
+                    $quantidadeVendida += $item->quantidade;
+                }
+            }
+        }
+
+        // Adiciona a quantidade vendida ao objeto do produto
+        $produto->quantidade_vendida = $quantidadeVendida;
+
+        // Calcula o valor total vendido
+        $produto->valor_total = $produto->valor * $quantidadeVendida;
+
+        return $produto;
+    });
+
+    // Gera o PDF
+    $pdf = \PDF::loadView('pedido.relatorio_mensal', compact('produtos'));
+
+    return $pdf->stream('relatorio_mensal.pdf');
+}
+
+
 }
