@@ -18,9 +18,6 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             
                 <div class="flex justify-center mb-4">
-    <a href="/">
-        <img src="{{ asset('images/lomi.jpeg') }}" alt="Logo" class="w-32 h-32">
-    </a>
 </div>
 
             

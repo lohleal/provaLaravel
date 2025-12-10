@@ -68,14 +68,7 @@
                             @endauth
                         </a>
                         <ul class="dropdown-menu">
-                            <li>
-                                <a href="" class="dropdown-item">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="#777" class="bi bi-key-fill" viewBox="0 0 16 16">
-                                        <path d="M3.5 11.5a3.5 3.5 0 1 1 3.163-5H14L15.5 8 14 9.5l-1-1-1 1-1-1-1 1-1-1-1 1H6.663a3.5 3.5 0 0 1-3.163 2M2.5 9a1 1 0 1 0 0-2 1 1 0 0 0 0 2" />
-                                    </svg>
-                                    <span class="ps-1 text-secondary ">Alterar Senha</span>
-                                </a>
-                            </li>
+                          
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <li>
@@ -125,11 +118,7 @@
         <hr>
         @yield('conteudo')
     </div>
-    <nav class="navbar fixed-bottom navbar-dark bg-secondary">
-        <div class="container-fluid">
-            <span class="text-white">&copy; Todos os direitos reservados.</span>
-        </div>
-    </nav>
+
 </body>
 
 <div class="modal fade" tabindex="-1" id="removeModal">

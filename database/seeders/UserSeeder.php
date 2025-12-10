@@ -32,5 +32,3 @@ class UserSeeder extends Seeder
     }
 }
 
-
-userSeeders

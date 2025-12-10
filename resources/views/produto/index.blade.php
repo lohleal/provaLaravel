@@ -1,9 +1,9 @@
 @extends('templates/main', [
-'titulo' => "LOMI COFFEE",
-'cabecalho' => 'Cardápio',
-'rota' => 'produto.create',
-'relatorio' => 'report.produto',
-'class' => App\Models\Produto::class,
+    'titulo' => "LOMI COFFEE",
+    'cabecalho' => 'Cardápio',
+    'rota' => 'produto.create',
+    'relatorio' => session('tipo_usuario') === 'cliente' ? null : 'report.produto',
+    'class' => App\Models\Produto::class,
 ])
 
 @section('conteudo')
@@ -68,9 +68,9 @@
     @endforeach
 </div>
 
-<a href="{{ route('login') }}" class="btn-voltar-login">Voltar</a>
-
+{{-- BOTÕES FIXOS PARA CLIENTE --}}
 @if(session('tipo_usuario') === 'cliente')
+<a href="{{ route('login') }}" class="btn-voltar-login">Voltar</a>
 <a href="{{ route('pedido.revisar') }}" class="btn-finalizar">Finalizar Pedido</a>
 @endif
 
@@ -116,7 +116,7 @@ function salvarCliente() {
 <style>
 /* Fundo da página */
 body {
-    background-color: #c8d5b9; /* verde musgo pastel clara */
+    background-color: #c8d5b9;
     margin: 0;
     font-family: Arial, sans-serif;
 }
@@ -139,7 +139,7 @@ body {
     background: #f7e9d8;
     border: 3px solid #43503d;
     border-radius: 20px;
-    padding: 40px 40px;
+    padding: 40px;
     width: 400px;
     text-align: center;
     box-shadow: 0 6px 25px #0006;
@@ -147,21 +147,18 @@ body {
     font-family: Georgia, serif;
 }
 
-/* Input arredondado e centralizado */
-/* Input arredondado e centralizado */
 #clienteModal .form-control {
-    display: block;       /* faz o input se comportar como bloco */
-    width: 90%;           /* largura do input */
+    display: block;
+    width: 90%;
     padding: 10px 16px;
-    border-radius: 25px;  /* totalmente arredondado */
+    border-radius: 25px;
     border: 2px solid #43503d;
     font-size: 16px;
     outline: none;
     transition: 0.3s;
     text-align: center;
-    margin: 20px auto;    /* centraliza horizontalmente */
+    margin: 20px auto;
 }
-
 
 #clienteModal .form-control:focus {
     border-color: #c8bba7;
@@ -230,11 +227,6 @@ body {
     padding: 10px;
     text-align: center;
     box-shadow: 0 4px 10px #0002;
-    transition: transform .2s;
-}
-
-.card-produto:hover {
-    transform: scale(1.05);
 }
 
 .img-produto-card {
@@ -273,3 +265,4 @@ body {
     color: #666;
 }
 </style>
+    
