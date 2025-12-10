@@ -15,26 +15,29 @@ class ProdutoController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        Gate::authorize('viewAny', Produto::class);
+{
+    Gate::authorize('viewAny', Produto::class);
 
-        $produtos = Produto::with('curso')
-                           ->orderBy('curso_id')
-                           ->orderBy('nome')
-                           ->get();
+    $produtos = Produto::with('curso')
+                       ->orderBy('curso_id')
+                       ->orderBy('nome')
+                       ->get();
 
-        // BUSCA ITENS DO PEDIDO ATUAL
-        $pedidoId = session('pedido_id');
+    $categorias = Curso::orderBy('nome')->get(); // todas as categorias
 
-        $itensPedido = [];
-        if ($pedidoId) {
-            $itensPedido = \App\Models\PedidoItem::where('pedido_id', $pedidoId)
-                                                 ->pluck('quantidade', 'produto_id')
-                                                 ->toArray();
-        }
+    // BUSCA ITENS DO PEDIDO ATUAL
+    $pedidoId = session('pedido_id');
 
-        return view('produto.index', compact('produtos', 'itensPedido'));
+    $itensPedido = [];
+    if ($pedidoId) {
+        $itensPedido = \App\Models\PedidoItem::where('pedido_id', $pedidoId)
+                                             ->pluck('quantidade', 'produto_id')
+                                             ->toArray();
     }
+
+    return view('produto.index', compact('produtos', 'itensPedido', 'categorias'));
+}
+
 
     /**
      * Show the form for creating a new resource.
