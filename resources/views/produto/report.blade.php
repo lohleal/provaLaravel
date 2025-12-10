@@ -120,7 +120,6 @@
     </style>
 </head>
 <body>
-    <div class="texto-marca-dagua"> IFPR - PARANAGUÁ </div>
     <hr>
     <table style="margin: 0px auto; width: 100%">
         <tbody>
@@ -142,8 +141,6 @@
         <span style="font-size: 18px; font-weight: bold; font-style: italic;"></span>
     </div>
     <hr>
-
-    <div class="texto-restrito-baixo" style="position: absolute; bottom: 1px;"> DOCUMENTO GERADO PELO SISTEMA AULA </div>
 
     <div class="identification-header">PRODUTOS</div>
     @foreach($produtos as $produto)

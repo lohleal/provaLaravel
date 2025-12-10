@@ -160,11 +160,28 @@ class ProdutoController extends Controller
     /**
      * Generate PDF report.
      */
-    public function report()
+   public function report()
     {
-        $produtos = Produto::with('curso')->orderBy('curso_id')->get();
+        // Carrega produtos junto com curso
+        $produtos = Produto::with('curso')->get();
 
-        $pdf = Pdf::loadView('produto.report', compact('produtos'));
+        // Calcula quantidade vendida e valor total de cada item
+        foreach ($produtos as $produto) {
+            
+            // BUSCA TODAS AS VENDAS DO PRODUTO
+            $quantidadeVendida = \App\Models\PedidoItem::where('produto_id', $produto->id)
+                                ->sum('quantidade');
+
+            // CALCULA TOTAL
+            $valorTotal = $quantidadeVendida * $produto->valor;
+
+            // Adiciona ao objeto (não salva no banco)
+            $produto->quantidade_vendida = $quantidadeVendida;
+            $produto->valor_total = $valorTotal;
+        }
+
+        // Gera PDF
+        $pdf = \PDF::loadView('produto.report', compact('produtos'));
 
         return $pdf->stream('produtos.pdf');
     }

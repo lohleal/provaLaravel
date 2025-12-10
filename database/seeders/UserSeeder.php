@@ -16,14 +16,14 @@ class UserSeeder extends Seeder
     {
         $data = [
             [
-                "name" => "ANTÔNIO MARCOS SILVA",
-                'email' => "antonio@gmail.com",
+                "name" => "CLIENTE",
+                'email' => "cliente@gmail.com",
                 "password" => Hash::make('@1234@5678'),
                 "role_id" => 1,
             ],
             [
-                "name" => "RAFAELA SANTOS",
-                'email' => "rafaela@gmail.com",
+                "name" => "FUNCIONÁRIO",
+                'email' => "funcionario@gmail.com",
                 "password" => Hash::make('@1234@5678'),
                 "role_id" => 2,
             ],
@@ -31,3 +31,6 @@ class UserSeeder extends Seeder
         DB::table('users')->insert($data);
     }
 }
+
+
+userSeeders
