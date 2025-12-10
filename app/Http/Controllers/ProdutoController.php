@@ -34,7 +34,19 @@ class ProdutoController extends Controller
                                              ->toArray();
     }
 
-    return view('produto.index', compact('produtos', 'itensPedido', 'categorias'));
+return view('produto.index', [
+    'produtos' => $produtos,
+    'itensPedido' => $itensPedido,
+    'categorias' => $categorias,
+    'titulo' => 'LOMI COFFEE',      // título da página
+    'cabecalho' => 'Cardápio',      // cabeçalho da seção
+    'rota' => 'produto.create',     // rota do botão adicionar produto
+    'relatorio' => 'report.produto', // rota do relatório PDF
+    'class' => Produto::class        // classe para permissões
+]);
+
+
+
 }
 
 
