@@ -23,12 +23,10 @@
             <td>{{ $p->created_at->format('d/m/Y H:i') }}</td>
             <td>R$ {{ number_format($totalPedido, 2, ',', '.') }}</td>
             <td>
-                <!-- Botão da comanda -->
                 <a href="{{ route('pedido.pdf', $p->id) }}" class="btn btn-success btn-sm" target="_blank">
                     📄 Comanda
                 </a>
 
-                <!-- Botão de checklist -->
                 <button type="button" class="btn btn-success btn-sm ms-1 concluir-btn" data-id="{{ $p->id }}">
                     ✅
                 </button>
@@ -39,7 +37,6 @@
     </tbody>
 </table>
 
-<!-- JS para remover apenas do front-end -->
 <script>
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -60,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
-                    row.remove(); // remove do front-end
+                    row.remove();
                 } else {
                     alert('Erro ao concluir o pedido');
                 }

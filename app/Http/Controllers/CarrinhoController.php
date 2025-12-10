@@ -27,13 +27,11 @@ class CarrinhoController extends Controller
             return response()->json(['quantidade' => 0, 'error' => 'Produto não encontrado'], 400);
         }
 
-        // Cria o item se não existir
         $item = PedidoItem::firstOrCreate(
             ['pedido_id' => $pedido->id, 'produto_id' => $id],
             ['quantidade' => 0, 'valor' => $produto->valor]
         );
 
-        // Atualiza quantidade
         if ($request->action === 'increase') {
             $item->quantidade++;
         }

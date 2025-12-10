@@ -16,7 +16,6 @@ class PermissionController extends Controller {
             $arr_permissions[$item->resource->name] = (boolean) $item->permission;
         }
 
-        // dd($arr_permissions);
         session(['user_permissions' => $arr_permissions]);
     }
 

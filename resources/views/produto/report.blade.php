@@ -15,7 +15,7 @@
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%) rotate(-45deg); /* Centraliza e gira o texto */
+            transform: translate(-50%, -50%) rotate(-45deg);
             font-size: 7em;
             color: #888;
             opacity: 0.3;

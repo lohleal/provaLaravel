@@ -23,9 +23,8 @@ class ProdutoController extends Controller
                        ->orderBy('nome')
                        ->get();
 
-    $categorias = Curso::orderBy('nome')->get(); // todas as categorias
-
-    // BUSCA ITENS DO PEDIDO ATUAL
+    $categorias = Curso::orderBy('nome')->get(); 
+   
     $pedidoId = session('pedido_id');
 
     $itensPedido = [];
@@ -46,7 +45,7 @@ class ProdutoController extends Controller
     {
         Gate::authorize('create', Produto::class);
 
-        // Isso futuramente será Categoria::all()
+
         $cursos = Curso::orderBy('duracao')->get();
 
         return view('produto.create', compact('cursos'));
@@ -69,7 +68,6 @@ class ProdutoController extends Controller
             $produto->curso()->associate($curso);
             $produto->save();
 
-            // Upload de foto
             if ($request->hasFile('foto')) {
 
                 $file = $request->file('foto');
@@ -118,10 +116,8 @@ class ProdutoController extends Controller
             $produto->valor = floatval(str_replace(',', '.', $request->valor));
             $produto->curso()->associate($curso);
 
-            // Substituir foto
             if ($request->hasFile('foto')) {
 
-                // Excluir foto antiga
                 if ($produto->foto && Storage::disk('public')->exists($produto->foto)) {
                     Storage::disk('public')->delete($produto->foto);
                 }
@@ -149,7 +145,6 @@ class ProdutoController extends Controller
 
         if ($produto) {
 
-            // Remover foto antes de deletar o registro
             if ($produto->foto && Storage::disk('public')->exists($produto->foto)) {
                 Storage::disk('public')->delete($produto->foto);
             }
@@ -165,25 +160,19 @@ class ProdutoController extends Controller
      */
    public function report()
     {
-        // Carrega produtos junto com curso
         $produtos = Produto::with('curso')->get();
 
-        // Calcula quantidade vendida e valor total de cada item
         foreach ($produtos as $produto) {
             
-            // BUSCA TODAS AS VENDAS DO PRODUTO
             $quantidadeVendida = \App\Models\PedidoItem::where('produto_id', $produto->id)
                                 ->sum('quantidade');
 
-            // CALCULA TOTAL
             $valorTotal = $quantidadeVendida * $produto->valor;
 
-            // Adiciona ao objeto (não salva no banco)
             $produto->quantidade_vendida = $quantidadeVendida;
             $produto->valor_total = $valorTotal;
         }
 
-        // Gera PDF
         $pdf = \PDF::loadView('produto.report', compact('produtos'));
 
         return $pdf->stream('produtos.pdf');

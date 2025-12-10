@@ -8,7 +8,6 @@
 
     @section('conteudo')
 
-    {{-- POPUP PARA CLIENTE SEM NOME --}}
     @if(session('tipo_usuario') === 'cliente' && !session('cliente_nome'))
     <div id="clienteModal">
         <div class="popup-content">
@@ -19,13 +18,11 @@
     </div>
     @endif
 
-    {{-- TÍTULO DE BOAS-VINDAS --}}
     @if(session('cliente_nome'))
     <h5>Bem vindo(a) <strong>{{ session('cliente_nome') }}</strong></h5>
     @endif
 
     <div class="cardapio-container">
-        {{-- BARRA LATERAL --}}
         <aside class="sidebar">
             <h4>Categorias</h4>
             <ul>
@@ -40,7 +37,6 @@
             </ul>
         </aside>
 
-        {{-- ÁREA DE PRODUTOS --}}
         <main class="produtos-cards" id="produtos">
             @foreach ($produtos as $item)
 <div class="card-produto" data-categoria="{{ $item->curso->nome ?? 'Sem categoria' }}">
@@ -51,7 +47,6 @@
     <div class="sem-foto">Sem foto</div>
     @endif
 
-    {{-- INFORMAÇÕES --}}
     <div class="info-produto">
         <h5>{{ $item->nome }}</h5>
         <p>{{ $item->curso->nome ?? '-' }}</p>
@@ -67,7 +62,6 @@
             @endcan
 
             @can('delete', $item)
-            <!-- Formulário oculto -->
             <form id="form_{{ $item->id }}" action="{{ route('produto.destroy', $item->id) }}" method="POST" style="display:none;">
                 @csrf
                 @method('DELETE')
@@ -85,13 +79,11 @@
         </main>
     </div>
 
-    {{-- BOTÕES FIXOS PARA CLIENTE --}}
     @if(session('tipo_usuario') === 'cliente')
     <a href="{{ route('login') }}" class="btn-voltar-login">Voltar</a>
     <a href="{{ route('pedido.revisar') }}" class="btn-finalizar">Finalizar Pedido</a>
     @endif
 
-    {{-- MODAL DE IMAGEM --}}
     <div id="imagemModal">
         <span class="close" onclick="fecharModal()">&times;</span>
         <img id="modalImg" src="" alt="Imagem do produto">
@@ -101,7 +93,7 @@
 
     <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Modal de imagem
+        
         const imagens = document.querySelectorAll('.img-produto-card');
         const modal = document.getElementById('imagemModal');
         const modalImg = document.getElementById('modalImg');
@@ -161,13 +153,11 @@
     </script>
 
     <style>
-    /* Container principal */
     .cardapio-container {
         display: flex;
         gap: 20px;
     }
 
-    /* Barra lateral */
     .sidebar {
         width: 200px;
         background-color: #43503E;
@@ -199,7 +189,6 @@
         background-color: #6d7d6c;
     }
 
-    /* Produtos */
     .produtos-cards {
         display: flex;
         flex-wrap: wrap;
@@ -270,7 +259,6 @@
         transform: scale(1.1);
     }
 
-    /* Ações */
     .acoes {
         margin-top: 5px;
         display: flex;
@@ -299,7 +287,6 @@
         background-color: #c55c5c;
     }
 
-    /* Botões fixos */
     .btn-finalizar, .btn-voltar-login {
         position: fixed;
         bottom: 35px;
@@ -322,7 +309,6 @@
         transform: scale(1.07);
     }
 
-    /* Modal cliente */
     #clienteModal {
         position: fixed;
         top: 0;
@@ -379,7 +365,6 @@
         transform: scale(1.07);
     }
 
-    /* Modal de imagem */
     #imagemModal {
         display: none;
         position: fixed;
